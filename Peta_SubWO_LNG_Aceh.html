@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_7e6acc383b96843832410ca1c151609b {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css"/>
+</head>
+<body>
+    
+    <div style="position:fixed;bottom:40px;left:20px;z-index:1000;
+        background:rgba(255,255,255,0.95);border:2px solid #bbb;border-radius:10px;
+        padding:13px 18px;font-family:Arial;font-size:11.5px;
+        box-shadow:0 4px 16px rgba(0,0,0,.15);min-width:220px;">
+      <b style="color:#1F3864;font-size:12px">🗺 LEGENDA PETA</b><br><br>
+      <span style="font-size:15px">⛽</span> <b>Sumber LNG</b> – PT Perta Arun Gas<br>
+      <span style="font-size:15px">🏭</span> <b>WO Utama</b> – Banda Aceh<br>
+      <hr style="border:0;border-top:1px solid #ddd;margin:7px 0">
+      <span style="background:#1a73e8;color:#fff;border-radius:50%;padding:1px 5px">●</span>
+        Sub-WO <b>Lhokseumawe</b><br>
+      <span style="background:#34a853;color:#fff;border-radius:50%;padding:1px 5px">●</span>
+        Sub-WO <b>Bireuen</b><br>
+      <span style="background:#f9a825;color:#fff;border-radius:50%;padding:1px 5px">●</span>
+        Sub-WO <b>Sigli</b><br>
+      <hr style="border:0;border-top:1px solid #ddd;margin:7px 0">
+      <span style="font-size:13px">⭐</span> Lokasi Terbaik (WLS)<br>
+      <span style="color:#e67e22;font-weight:bold">①②③</span> Alternatif 1–3<br>
+      <div style="margin-top:6px;font-size:9.5px;color:#777">
+        Klik marker untuk detail lokasi<br>--- Rute distribusi (putus-putus)
+      </div>
+    </div>
+    <div style="position:fixed;top:12px;left:50%;transform:translateX(-50%);
+        z-index:1000;background:rgba(31,56,100,0.92);padding:10px 24px;border-radius:8px;
+        color:#fff;font-family:Arial;font-size:13.5px;font-weight:bold;
+        box-shadow:0 3px 12px rgba(0,0,0,.3);text-align:center;white-space:nowrap;">
+      🏗 Kajian Lokasi Sub-WO Bottling LNG – Aceh | PT Perta Arun Gas
+    </div>
+    
+            <div class="folium-map" id="map_7e6acc383b96843832410ca1c151609b" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_7e6acc383b96843832410ca1c151609b = L.map(
+                "map_7e6acc383b96843832410ca1c151609b",
+                {
+                    center: [5.35, 96.5],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 9,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_b7d03b5c9232a492262e203442400751 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_b7d03b5c9232a492262e203442400751.addTo(map_7e6acc383b96843832410ca1c151609b);
+        
+    
+            var tile_layer_411a906268773159005b0ac3cad70919 = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "Esri",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            var tile_layer_221521c398a7378deb4690978424e11c = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detect_retina": false, "max_native_zoom": 19, "max_zoom": 19, "min_zoom": 0, "no_wrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+            var mini_map_65ab7cef808da05d57045653a625f285 = new L.Control.MiniMap(
+                tile_layer_221521c398a7378deb4690978424e11c,
+                {
+  "position": "bottomright",
+  "width": 150,
+  "height": 150,
+  "collapsedWidth": 25,
+  "collapsedHeight": 25,
+  "zoomLevelOffset": -5,
+  "centerFixed": false,
+  "zoomAnimation": false,
+  "toggleDisplay": true,
+  "autoToggleDisplay": false,
+  "minimized": false,
+}
+            );
+            map_7e6acc383b96843832410ca1c151609b.addControl(mini_map_65ab7cef808da05d57045653a625f285);
+        
+    
+            L.control.fullscreen(
+                {
+  "position": "topright",
+  "title": "Full Screen",
+  "titleCancel": "Exit Full Screen",
+  "forceSeparateButton": false,
+}
+            ).addTo(map_7e6acc383b96843832410ca1c151609b);
+        
+    
+            var marker_87c2192bdeb23a7ff1e283f8d7c662c1 = L.marker(
+                [5.222558209285795, 97.08729013777733],
+                {
+}
+            ).addTo(map_7e6acc383b96843832410ca1c151609b);
+        
+    
+            var div_icon_4ea83000a7a2ffa5ec4be3a1577cbb21 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#c0392b;border:3px solid #fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.4);font-size:17px;\"\u003e\u26fd\u003c/div\u003e",
+  "iconSize": [32, 32],
+  "iconAnchor": [16, 16],
+  "className": "empty",
+});
+        
+    
+        var popup_82cc89af76dca73d2f92e83b85ae4b8a = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_7a31b43ca543ac23e5c14992cf0ace98 = $(`<div id="html_7a31b43ca543ac23e5c14992cf0ace98" style="width: 100.0%; height: 100.0%;"><div style="font-family:Arial;width:260px">             <div style="background:#c0392b;color:#fff;padding:8px;border-radius:4px 4px 0 0;font-weight:bold">             ⛽ SUMBER LNG – PT PERTA ARUN GAS</div>             <div style="padding:10px">             <b>Koordinat:</b> 5.222558, 97.087290<br>             <b>Lokasi:</b> Kab. Aceh Utara, Aceh<br>             <b>Fungsi:</b> LNG Filling Station – titik pengisian isotank</div></div></div>`)[0];
+                popup_82cc89af76dca73d2f92e83b85ae4b8a.setContent(html_7a31b43ca543ac23e5c14992cf0ace98);
+            
+        
+
+        marker_87c2192bdeb23a7ff1e283f8d7c662c1.bindPopup(popup_82cc89af76dca73d2f92e83b85ae4b8a)
+        ;
+
+        
+    
+    
+            marker_87c2192bdeb23a7ff1e283f8d7c662c1.bindTooltip(
+                `<div>
+                     LNG Filling Station – PT Perta Arun Gas
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_87c2192bdeb23a7ff1e283f8d7c662c1.setIcon(div_icon_4ea83000a7a2ffa5ec4be3a1577cbb21);
+            
+    
+            var marker_01ca5dd67cd7cf69c0194026de09f63c = L.marker(
+                [5.5483, 95.3238],
+                {
+}
+            ).addTo(map_7e6acc383b96843832410ca1c151609b);
+        
+    
+            var div_icon_e169219a6f559ece6b11b03283f42519 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#2c3e50;border:3px solid #fff;border-radius:6px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.4);font-size:16px;\"\u003e\ud83c\udfed\u003c/div\u003e",
+  "iconSize": [32, 32],
+  "iconAnchor": [16, 16],
+  "className": "empty",
+});
+        
+    
+        var popup_12abf33b8ed3132a6384e0f8e29e0d76 = L.popup({
+  "maxWidth": 260,
+});
+
+        
+            
+                var html_5bcd754e0bde9dd2889521b0827c50e4 = $(`<div id="html_5bcd754e0bde9dd2889521b0827c50e4" style="width: 100.0%; height: 100.0%;"><div style="font-family:Arial;width:250px">             <div style="background:#2c3e50;color:#fff;padding:8px;border-radius:4px 4px 0 0;font-weight:bold">             🏭 WO UTAMA – BANDA ACEH</div>             <div style="padding:10px">             <b>Koordinat:</b> 5.5483, 95.3238<br>             <b>Status:</b> Beroperasi (existing)<br>             <b>Fungsi:</b> Wilayah Operasi Utama</div></div></div>`)[0];
+                popup_12abf33b8ed3132a6384e0f8e29e0d76.setContent(html_5bcd754e0bde9dd2889521b0827c50e4);
+            
+        
+
+        marker_01ca5dd67cd7cf69c0194026de09f63c.bindPopup(popup_12abf33b8ed3132a6384e0f8e29e0d76)
+        ;
+
+        
+    
+    
+            marker_01ca5dd67cd7cf69c0194026de09f63c.bindTooltip(
+                `<div>
+                     WO Utama – Banda Aceh (Existing)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_01ca5dd67cd7cf69c0194026de09f63c.setIcon(div_icon_e169219a6f559ece6b11b03283f42519);
+            
+    
+            var poly_line_05ae68455d17cff40304eeb9ace60f30 = L.polyline(
+                [[5.222558209285795, 97.08729013777733], [5.1801, 97.1502]],
+                {"bubblingMouseEvents": true, "color": "#1a73e8", "dashArray": "8 4", "dashOffset": null, "fill": false, "fillColor": "#1a73e8", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.7, "smoothFactor": 1.0, "stroke": true, "weight": 3.5}
+            ).addTo(map_7e6acc383b96843832410ca1c151609b);
+        
+    
+            poly_line_05ae68455d17cff40304eeb9ace60f30.bindTooltip(
+                `<div>
+                     Rute Arun → Lhokseumawe (11.4 km)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_c522ca070058b8617ecd555fd78aed59 = L.polyline(
+                [[5.222558209285795, 97.08729013777733], [5.207, 96.705]],
+                {"bubblingMouseEvents": true, "color": "#34a853", "dashArray": "8 4", "dashOffset": null, "fill": false, "fillColor": "#34a853", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.7, "smoothFactor": 1.0, "stroke": true, "weight": 3.5}
+            ).addTo(map_7e6acc383b96843832410ca1c151609b);
+        
+    
+            poly_line_c522ca070058b8617ecd555fd78aed59.bindTooltip(
+                `<div>
+                     Rute Arun → Bireuen (57.2 km)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_10475906c7fb235641f4a59dc9a1fb04 = L.polyline(
+                [[5.222558209285795, 97.08729013777733], [5.387, 95.96]],
+                {"bubblingMouseEvents": true, "color": "#f9a825", "dashArray": "8 4", "dashOffset": null, "fill": false, "fillColor": "#f9a825", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.7, "smoothFactor": 1.0, "stroke": true, "weight": 3.5}
+            ).addTo(map_7e6acc383b96843832410ca1c151609b);
+        
+    
+            poly_line_10475906c7fb235641f4a59dc9a1fb04.bindTooltip(
+                `<div>
+                     Rute Arun → Sigli (157.7 km)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_a08eb17ca33ef2eb3dff09e098a9c938 = L.polyline(
+                [[5.222558209285795, 97.08729013777733], [5.5483, 95.3238]],
+                {"bubblingMouseEvents": true, "color": "#2c3e50", "dashArray": "4 8", "dashOffset": null, "fill": false, "fillColor": "#2c3e50", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.45, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_7e6acc383b96843832410ca1c151609b);
+        
+    
+            poly_line_a08eb17ca33ef2eb3dff09e098a9c938.bindTooltip(
+                `<div>
+                     Rute eksisting Arun → Banda Aceh
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var feature_group_fae24bb7235381f8663c2ca39b066b00 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var marker_0e866ed0a5b099c6681b8d3610ce6113 = L.marker(
+                [5.1801, 97.1502],
+                {
+}
+            ).addTo(feature_group_fae24bb7235381f8663c2ca39b066b00);
+        
+    
+            var div_icon_b2fde37cab1f1eb32aa9eeb1a7f891b9 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#27ae60;border:2.5px solid #fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:18px;color:#fff;font-weight:bold;\"\u003e\u2b50\u003c/div\u003e",
+  "iconSize": [32, 32],
+  "iconAnchor": [16, 16],
+  "className": "empty",
+});
+        
+    
+        var popup_66243d9f5f8ef6d387f27da1f92ecac2 = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_89012888aa702cb3901b2178f0034ca5 = $(`<div id="html_89012888aa702cb3901b2178f0034ca5" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#27ae60;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Lhokseumawe – TERBAIK</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Kawasan Industri Jln. Merdeka Barat – Muara Dua</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.1801, 97.1502</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. Merdeka Barat (Jalan Nasional Lintas Timur Sumatera)</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Mon Geudong</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Banda Sakti</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kota Lhokseumawe</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>11.4 km</b> (0j 15m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>278.5 km (6j 11m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Tidak</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>8.78 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#e8f5e9;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Posisi sentral Kota Lhokseumawe; akses langsung jalan nasional tanpa harus masuk permukiman; sinergi dengan zona industri KEK Arun; infrastruktur logistik memadai; potensi permintaan tertinggi di kota.               </div>             </div></div></div>`)[0];
+                popup_66243d9f5f8ef6d387f27da1f92ecac2.setContent(html_89012888aa702cb3901b2178f0034ca5);
+            
+        
+
+        marker_0e866ed0a5b099c6681b8d3610ce6113.bindPopup(popup_66243d9f5f8ef6d387f27da1f92ecac2)
+        ;
+
+        
+    
+    
+            marker_0e866ed0a5b099c6681b8d3610ce6113.bindTooltip(
+                `<div>
+                     [Lhokseumawe] TERBAIK – Kawasan Industri Jln. Merdeka Barat – Muara Dua
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_0e866ed0a5b099c6681b8d3610ce6113.setIcon(div_icon_b2fde37cab1f1eb32aa9eeb1a7f891b9);
+            
+    
+            var marker_1574509ea575143e640c6d4bef8c6e7b = L.marker(
+                [5.19, 97.128],
+                {
+}
+            ).addTo(feature_group_fae24bb7235381f8663c2ca39b066b00);
+        
+    
+            var div_icon_96cd9a7c1e9b858b14884ca942e2307a = L.divIcon({
+  "html": "\u003cdiv style=\"background:#e67e22;border:2.5px solid #fff;border-radius:50%;width:27px;height:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:15px;color:#fff;font-weight:bold;\"\u003e\u2460\u003c/div\u003e",
+  "iconSize": [27, 27],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_4d92fb0490f022775814b1e792d8ce4d = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_6de958ca3b3813463ca9af7874190999 = $(`<div id="html_6de958ca3b3813463ca9af7874190999" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#e67e22;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Lhokseumawe – ALTERNATIF 1</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Pergudangan Jln. Banda Aceh – Medan KM 275</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.1900, 97.1280</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. Banda Aceh – Medan (Nasional), KM 275</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Hagu Selatan</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Banda Sakti</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kota Lhokseumawe</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>7.8 km</b> (0j 10m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>275.0 km (6j 7m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Tidak</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>8.78 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#fff8e1;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Akses langsung jalan nasional; area pergudangan komersial tersedia; dekat simpang distribusi ke pedalaman Aceh Tengah via Bireuen–Takengon.               </div>             </div></div></div>`)[0];
+                popup_4d92fb0490f022775814b1e792d8ce4d.setContent(html_6de958ca3b3813463ca9af7874190999);
+            
+        
+
+        marker_1574509ea575143e640c6d4bef8c6e7b.bindPopup(popup_4d92fb0490f022775814b1e792d8ce4d)
+        ;
+
+        
+    
+    
+            marker_1574509ea575143e640c6d4bef8c6e7b.bindTooltip(
+                `<div>
+                     [Lhokseumawe] ALTERNATIF 1 – Pergudangan Jln. Banda Aceh – Medan KM 275
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_1574509ea575143e640c6d4bef8c6e7b.setIcon(div_icon_96cd9a7c1e9b858b14884ca942e2307a);
+            
+    
+            var marker_10ff3f150f9f8a2a032c93fc453cdaa0 = L.marker(
+                [5.205, 97.11],
+                {
+}
+            ).addTo(feature_group_fae24bb7235381f8663c2ca39b066b00);
+        
+    
+            var div_icon_8008c74a0be9427491c9002452a67e58 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#e67e22;border:2.5px solid #fff;border-radius:50%;width:27px;height:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:15px;color:#fff;font-weight:bold;\"\u003e\u2461\u003c/div\u003e",
+  "iconSize": [27, 27],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_d72946cc68ee75eaa5d70d54148730da = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_48cf6a37d61c482778b88b764c228b61 = $(`<div id="html_48cf6a37d61c482778b88b764c228b61" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#e67e22;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Lhokseumawe – ALTERNATIF 2</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Kawasan Batuphat – Muara Dua</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.2050, 97.1100</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. Batuphat Barat</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Batuphat Barat</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Muara Dua</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kota Lhokseumawe</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>4.3 km</b> (0j 6m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>271.9 km (6j 2m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Tidak</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>8.85 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#fff8e1;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Sinergi regulasi zona industri energi KEK Arun; infrastruktur jalan industri berat sudah tersedia; kemudahan perizinan operasional LNG.               </div>             </div></div></div>`)[0];
+                popup_d72946cc68ee75eaa5d70d54148730da.setContent(html_48cf6a37d61c482778b88b764c228b61);
+            
+        
+
+        marker_10ff3f150f9f8a2a032c93fc453cdaa0.bindPopup(popup_d72946cc68ee75eaa5d70d54148730da)
+        ;
+
+        
+    
+    
+            marker_10ff3f150f9f8a2a032c93fc453cdaa0.bindTooltip(
+                `<div>
+                     [Lhokseumawe] ALTERNATIF 2 – Kawasan Batuphat – Muara Dua
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_10ff3f150f9f8a2a032c93fc453cdaa0.setIcon(div_icon_8008c74a0be9427491c9002452a67e58);
+            
+    
+            var marker_b55d483909e6177fdbf4166b220c352b = L.marker(
+                [5.165, 97.142],
+                {
+}
+            ).addTo(feature_group_fae24bb7235381f8663c2ca39b066b00);
+        
+    
+            var div_icon_5998d4712c1141e99ff95d2b66455f64 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#e67e22;border:2.5px solid #fff;border-radius:50%;width:27px;height:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:15px;color:#fff;font-weight:bold;\"\u003e\u2462\u003c/div\u003e",
+  "iconSize": [27, 27],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_4e0d5e9ddfe65ef62e0e7e32a3bf737a = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_49168814ddea22208dd4b14b52df8f59 = $(`<div id="html_49168814ddea22208dd4b14b52df8f59" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#e67e22;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Lhokseumawe – ALTERNATIF 3</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Simpang Jln. Iskandar Muda – Ring Road Lhokseumawe</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.1650, 97.1420</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. Iskandar Muda / Ring Road Lhokseumawe</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Keude Aceh</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Banda Sakti</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kota Lhokseumawe</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>11.9 km</b> (0j 16m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>277.8 km (6j 10m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Tidak</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>8.03 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#fff8e1;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Jangkauan distribusi ke seluruh kota lebih merata; dekat pusat permintaan pelanggan; akses multi-arah dari ring road.               </div>             </div></div></div>`)[0];
+                popup_4e0d5e9ddfe65ef62e0e7e32a3bf737a.setContent(html_49168814ddea22208dd4b14b52df8f59);
+            
+        
+
+        marker_b55d483909e6177fdbf4166b220c352b.bindPopup(popup_4e0d5e9ddfe65ef62e0e7e32a3bf737a)
+        ;
+
+        
+    
+    
+            marker_b55d483909e6177fdbf4166b220c352b.bindTooltip(
+                `<div>
+                     [Lhokseumawe] ALTERNATIF 3 – Simpang Jln. Iskandar Muda – Ring Road Lhokseumawe
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b55d483909e6177fdbf4166b220c352b.setIcon(div_icon_5998d4712c1141e99ff95d2b66455f64);
+            
+    
+            feature_group_fae24bb7235381f8663c2ca39b066b00.addTo(map_7e6acc383b96843832410ca1c151609b);
+        
+    
+            var feature_group_dac23cf9a652f1e6433e85aa88abfc55 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var marker_24671d876e8917acc48a6ae02b53d1ea = L.marker(
+                [5.207, 96.705],
+                {
+}
+            ).addTo(feature_group_dac23cf9a652f1e6433e85aa88abfc55);
+        
+    
+            var div_icon_8c3e3b5f4828deeeb14e1e83ae8d1625 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#27ae60;border:2.5px solid #fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:18px;color:#fff;font-weight:bold;\"\u003e\u2b50\u003c/div\u003e",
+  "iconSize": [32, 32],
+  "iconAnchor": [16, 16],
+  "className": "empty",
+});
+        
+    
+        var popup_b04ecb703dc4aaaa5f760a144a372d3a = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_0670db5c330ff5a57883fd7c0d2cf06e = $(`<div id="html_0670db5c330ff5a57883fd7c0d2cf06e" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#27ae60;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Bireuen – TERBAIK</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Kawasan Industri Jln. Nasional Bireuen Timur</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.2070, 96.7050</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. Nasional Banda Aceh – Medan (Lintas Timur Sumatera)</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Geulanggang Teungoh</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Kota Juang</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kabupaten Bireuen</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>57.2 km</b> (1j 16m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>212.7 km (4j 44m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Tidak</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>8.22 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#e8f5e9;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Posisi centroid distribusi optimal antara Lhokseumawe dan Sigli; akses ke jalan Bireuen–Takengon untuk menjangkau pedalaman; simpang distribusi multi-arah; infrastruktur jalan nasional baik.               </div>             </div></div></div>`)[0];
+                popup_b04ecb703dc4aaaa5f760a144a372d3a.setContent(html_0670db5c330ff5a57883fd7c0d2cf06e);
+            
+        
+
+        marker_24671d876e8917acc48a6ae02b53d1ea.bindPopup(popup_b04ecb703dc4aaaa5f760a144a372d3a)
+        ;
+
+        
+    
+    
+            marker_24671d876e8917acc48a6ae02b53d1ea.bindTooltip(
+                `<div>
+                     [Bireuen] TERBAIK – Kawasan Industri Jln. Nasional Bireuen Timur
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_24671d876e8917acc48a6ae02b53d1ea.setIcon(div_icon_8c3e3b5f4828deeeb14e1e83ae8d1625);
+            
+    
+            var marker_d136d471b224d5769e955a131574e110 = L.marker(
+                [5.2, 96.69],
+                {
+}
+            ).addTo(feature_group_dac23cf9a652f1e6433e85aa88abfc55);
+        
+    
+            var div_icon_1c62942d8049b331ca93012e426aeb2c = L.divIcon({
+  "html": "\u003cdiv style=\"background:#e67e22;border:2.5px solid #fff;border-radius:50%;width:27px;height:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:15px;color:#fff;font-weight:bold;\"\u003e\u2460\u003c/div\u003e",
+  "iconSize": [27, 27],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_b42d284dfe3acc473308e35b153bc20b = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_95069539fd78f950f05493f88c269188 = $(`<div id="html_95069539fd78f950f05493f88c269188" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#e67e22;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Bireuen – ALTERNATIF 1</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Simpang Jln. Bireuen – Takengon, Pinggir Jalan Nasional</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.2000, 96.6900</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. Bireuen – Takengon / Jl. Nasional</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Bireuen Meunasah Capa</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Kota Juang</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kabupaten Bireuen</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>59.5 km</b> (1j 19m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>210.8 km (4j 41m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Tidak</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>7.83 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#fff8e1;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Menjangkau pelanggan Aceh Tengah & Bener Meriah dari satu titik; posisi simpang distribusi multi-arah yang tidak tersedia di lokasi lain.               </div>             </div></div></div>`)[0];
+                popup_b42d284dfe3acc473308e35b153bc20b.setContent(html_95069539fd78f950f05493f88c269188);
+            
+        
+
+        marker_d136d471b224d5769e955a131574e110.bindPopup(popup_b42d284dfe3acc473308e35b153bc20b)
+        ;
+
+        
+    
+    
+            marker_d136d471b224d5769e955a131574e110.bindTooltip(
+                `<div>
+                     [Bireuen] ALTERNATIF 1 – Simpang Jln. Bireuen – Takengon, Pinggir Jalan Nasional
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d136d471b224d5769e955a131574e110.setIcon(div_icon_1c62942d8049b331ca93012e426aeb2c);
+            
+    
+            var marker_8940a0da97badb398f82e614893502af = L.marker(
+                [5.21, 96.675],
+                {
+}
+            ).addTo(feature_group_dac23cf9a652f1e6433e85aa88abfc55);
+        
+    
+            var div_icon_c12ff13f5b8ec17f67090710e89ff17d = L.divIcon({
+  "html": "\u003cdiv style=\"background:#e67e22;border:2.5px solid #fff;border-radius:50%;width:27px;height:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:15px;color:#fff;font-weight:bold;\"\u003e\u2461\u003c/div\u003e",
+  "iconSize": [27, 27],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_c29d44f0f9284d64a5d8e26b9bd6ed60 = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_b742ada454f6406c9cca1006353e9eda = $(`<div id="html_b742ada454f6406c9cca1006353e9eda" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#e67e22;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Bireuen – ALTERNATIF 2</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Kawasan Barat Bireuen – Jln. Medan – Banda Aceh</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.2100, 96.6750</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. Banda Aceh – Medan (Nasional)</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Bireuen Meunasah Blang</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Kota Juang</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kabupaten Bireuen</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>61.7 km</b> (1j 22m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>208.2 km (4j 38m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Tidak</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>7.30 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#fff8e1;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Lahan industri tersedia lebih luas; biaya operasional lebih rendah; akses jalan nasional tetap baik; potensi pengembangan fasilitas jangka panjang.               </div>             </div></div></div>`)[0];
+                popup_c29d44f0f9284d64a5d8e26b9bd6ed60.setContent(html_b742ada454f6406c9cca1006353e9eda);
+            
+        
+
+        marker_8940a0da97badb398f82e614893502af.bindPopup(popup_c29d44f0f9284d64a5d8e26b9bd6ed60)
+        ;
+
+        
+    
+    
+            marker_8940a0da97badb398f82e614893502af.bindTooltip(
+                `<div>
+                     [Bireuen] ALTERNATIF 2 – Kawasan Barat Bireuen – Jln. Medan – Banda Aceh
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_8940a0da97badb398f82e614893502af.setIcon(div_icon_c12ff13f5b8ec17f67090710e89ff17d);
+            
+    
+            var marker_b33f58170b1a1e3ec5f2321ec958d4ce = L.marker(
+                [5.215, 96.72],
+                {
+}
+            ).addTo(feature_group_dac23cf9a652f1e6433e85aa88abfc55);
+        
+    
+            var div_icon_1bbe90ee2d190ed45430082886cd8a18 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#e67e22;border:2.5px solid #fff;border-radius:50%;width:27px;height:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:15px;color:#fff;font-weight:bold;\"\u003e\u2462\u003c/div\u003e",
+  "iconSize": [27, 27],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_2ba1b270e0b4ace5374666cb66b29b99 = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_ce7ff8741f93f7cddb36723f24ce0dfb = $(`<div id="html_ce7ff8741f93f7cddb36723f24ce0dfb" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#e67e22;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Bireuen – ALTERNATIF 3</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Kawasan Timur Bireuen – Jln. Nasional Lintas Timur</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.2150, 96.7200</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. Nasional Lintas Timur Sumatera</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Geulanggang Baro</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Kota Juang</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kabupaten Bireuen</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>54.9 km</b> (1j 13m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>214.6 km (4j 46m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Tidak</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>8.12 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#fff8e1;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Lebih dekat ke Lhokseumawe untuk efisiensi top-up isotank; akses jalan nasional baik; area belum padat sehingga mudah dibangun.               </div>             </div></div></div>`)[0];
+                popup_2ba1b270e0b4ace5374666cb66b29b99.setContent(html_ce7ff8741f93f7cddb36723f24ce0dfb);
+            
+        
+
+        marker_b33f58170b1a1e3ec5f2321ec958d4ce.bindPopup(popup_2ba1b270e0b4ace5374666cb66b29b99)
+        ;
+
+        
+    
+    
+            marker_b33f58170b1a1e3ec5f2321ec958d4ce.bindTooltip(
+                `<div>
+                     [Bireuen] ALTERNATIF 3 – Kawasan Timur Bireuen – Jln. Nasional Lintas Timur
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b33f58170b1a1e3ec5f2321ec958d4ce.setIcon(div_icon_1bbe90ee2d190ed45430082886cd8a18);
+            
+    
+            feature_group_dac23cf9a652f1e6433e85aa88abfc55.addTo(map_7e6acc383b96843832410ca1c151609b);
+        
+    
+            var feature_group_1ef5135234273c4f84491b10d2154c77 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var marker_a4d9c069702a0407e0012a2635204a55 = L.marker(
+                [5.387, 95.96],
+                {
+}
+            ).addTo(feature_group_1ef5135234273c4f84491b10d2154c77);
+        
+    
+            var div_icon_f08604683d8fbd4d75f80f038c9c1baa = L.divIcon({
+  "html": "\u003cdiv style=\"background:#27ae60;border:2.5px solid #fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:18px;color:#fff;font-weight:bold;\"\u003e\u2b50\u003c/div\u003e",
+  "iconSize": [32, 32],
+  "iconAnchor": [16, 16],
+  "className": "empty",
+});
+        
+    
+        var popup_c71170a8e1f6f4f30c910d1b1244e510 = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_081966c493ce2e7e686dfc49edadf829 = $(`<div id="html_081966c493ce2e7e686dfc49edadf829" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#27ae60;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Sigli – TERBAIK</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Kawasan Jln. T.M. Daud Beureueh – Sigli Utara</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.3870, 95.9600</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. T. Muhammad Daud Beureueh (Jalan Nasional)</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Blang Asan</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Kota Sigli</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kabupaten Pidie</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>157.7 km</b> (2j 38m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>98.1 km (2j 11m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Ya ✅</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>8.45 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#e8f5e9;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Aksesibilitas tol meningkatkan efisiensi distribusi dari Arun secara drastis; posisi sentral Kota Sigli; jalan nasional 2 jalur; titik persimpangan ke Pidie Jaya; bukan kawasan padat permukiman.               </div>             </div></div></div>`)[0];
+                popup_c71170a8e1f6f4f30c910d1b1244e510.setContent(html_081966c493ce2e7e686dfc49edadf829);
+            
+        
+
+        marker_a4d9c069702a0407e0012a2635204a55.bindPopup(popup_c71170a8e1f6f4f30c910d1b1244e510)
+        ;
+
+        
+    
+    
+            marker_a4d9c069702a0407e0012a2635204a55.bindTooltip(
+                `<div>
+                     [Sigli] TERBAIK – Kawasan Jln. T.M. Daud Beureueh – Sigli Utara
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_a4d9c069702a0407e0012a2635204a55.setIcon(div_icon_f08604683d8fbd4d75f80f038c9c1baa);
+            
+    
+            var marker_ba9ea0686a76b911fcddff4de046c310 = L.marker(
+                [5.375, 95.95],
+                {
+}
+            ).addTo(feature_group_1ef5135234273c4f84491b10d2154c77);
+        
+    
+            var div_icon_4721c53e92d451e0da724245a107eb86 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#e67e22;border:2.5px solid #fff;border-radius:50%;width:27px;height:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:15px;color:#fff;font-weight:bold;\"\u003e\u2460\u003c/div\u003e",
+  "iconSize": [27, 27],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_d8905c69eb4652e16ed586cf35c8cc13 = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_2c84fa33cbd086783d6f4ba31fc656e2 = $(`<div id="html_2c84fa33cbd086783d6f4ba31fc656e2" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#e67e22;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Sigli – ALTERNATIF 1</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Kawasan Pergudangan Jln. Padang Tiji – Sigli</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.3750, 95.9500</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. Padang Tiji – Sigli (Jalan Nasional)</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Pulo Pidie</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Kota Sigli</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kabupaten Pidie</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>158.8 km</b> (2j 39m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>97.1 km (2j 10m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Ya ✅</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>8.55 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#fff8e1;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Akses langsung dari tol Seksi 1 (Padang Tiji–Seulimeum); waktu tempuh dari Arun paling singkat karena exit tol paling dekat; biaya BBM paling efisien dengan memanfaatkan kecepatan tol.               </div>             </div></div></div>`)[0];
+                popup_d8905c69eb4652e16ed586cf35c8cc13.setContent(html_2c84fa33cbd086783d6f4ba31fc656e2);
+            
+        
+
+        marker_ba9ea0686a76b911fcddff4de046c310.bindPopup(popup_d8905c69eb4652e16ed586cf35c8cc13)
+        ;
+
+        
+    
+    
+            marker_ba9ea0686a76b911fcddff4de046c310.bindTooltip(
+                `<div>
+                     [Sigli] ALTERNATIF 1 – Kawasan Pergudangan Jln. Padang Tiji – Sigli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_ba9ea0686a76b911fcddff4de046c310.setIcon(div_icon_4721c53e92d451e0da724245a107eb86);
+            
+    
+            var marker_d213fc152735f38d7e1be689eca5581b = L.marker(
+                [5.395, 95.97],
+                {
+}
+            ).addTo(feature_group_1ef5135234273c4f84491b10d2154c77);
+        
+    
+            var div_icon_439b335ee5f0541dbd04d24e49840b86 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#e67e22;border:2.5px solid #fff;border-radius:50%;width:27px;height:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:15px;color:#fff;font-weight:bold;\"\u003e\u2461\u003c/div\u003e",
+  "iconSize": [27, 27],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_295f482d1b5947e14da01c95a468ed88 = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_b7b4474552547194166e39c0e852e78b = $(`<div id="html_b7b4474552547194166e39c0e852e78b" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#e67e22;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Sigli – ALTERNATIF 2</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Kawasan Simpang Empat Tangse – Sigli</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.3950, 95.9700</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. Sigli – Tangse / Jl. Nasional</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Kota Bakti</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Kota Sigli</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kabupaten Pidie</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>156.5 km</b> (2j 37m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>99.3 km (2j 13m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Ya ✅</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>7.90 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#fff8e1;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Menjangkau pelanggan pedalaman Pidie yang tidak terlayani dari Banda Aceh; posisi centroid distribusi seluruh wilayah Pidie; dekat pusat demand.               </div>             </div></div></div>`)[0];
+                popup_295f482d1b5947e14da01c95a468ed88.setContent(html_b7b4474552547194166e39c0e852e78b);
+            
+        
+
+        marker_d213fc152735f38d7e1be689eca5581b.bindPopup(popup_295f482d1b5947e14da01c95a468ed88)
+        ;
+
+        
+    
+    
+            marker_d213fc152735f38d7e1be689eca5581b.bindTooltip(
+                `<div>
+                     [Sigli] ALTERNATIF 2 – Kawasan Simpang Empat Tangse – Sigli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d213fc152735f38d7e1be689eca5581b.setIcon(div_icon_439b335ee5f0541dbd04d24e49840b86);
+            
+    
+            var marker_ba9f98a4f395551276de3edf73dc6361 = L.marker(
+                [5.38, 96.0],
+                {
+}
+            ).addTo(feature_group_1ef5135234273c4f84491b10d2154c77);
+        
+    
+            var div_icon_5e9116ed071b8d8fac1e0018d5d6cd68 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#e67e22;border:2.5px solid #fff;border-radius:50%;width:27px;height:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35);font-size:15px;color:#fff;font-weight:bold;\"\u003e\u2462\u003c/div\u003e",
+  "iconSize": [27, 27],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_544f9ed90846970c0ce44117f6ee5ea2 = L.popup({
+  "maxWidth": 330,
+});
+
+        
+            
+                var html_84ec02d24615dfafd6e07cadf91df2b9 = $(`<div id="html_84ec02d24615dfafd6e07cadf91df2b9" style="width: 100.0%; height: 100.0%;">             <div style="font-family:Arial;width:310px">             <div style="background:#e67e22;color:#fff;padding:9px 12px;border-radius:5px 5px 0 0">               <div style="font-size:10px">Sigli – ALTERNATIF 3</div>               <div style="font-size:12px;font-weight:bold;margin-top:3px">Kawasan Industri Simpang Sigli – Pidie Jaya</div>             </div>             <div style="padding:10px 12px;border:1px solid #ddd;border-radius:0 0 5px 5px;background:#fafafa">               <table style="width:100%;font-size:10px;border-collapse:collapse">                 <tr><td style="color:#666;width:40%">📍 Koordinat</td>                     <td><b>5.3800, 96.0000</b></td></tr>                 <tr><td style="color:#666">🛣 Jalan</td><td>Jl. Sigli – Meureudu (Nasional)</td></tr>                 <tr><td style="color:#666">🏘 Kelurahan</td><td>Meunasah Blang</td></tr>                 <tr><td style="color:#666">📌 Kecamatan</td><td>Kota Sigli</td></tr>                 <tr><td style="color:#666">🏙 Kota/Kab</td><td>Kabupaten Pidie</td></tr>                 <tr><td style="color:#666">↔ Jarak Arun</td>                     <td><b>152.1 km</b> (2j 32m)</td></tr>                 <tr><td style="color:#666">↔ Jarak Banda Aceh</td>                     <td>104.2 km (2j 19m)</td></tr>                 <tr><td style="color:#666">🚛 Via Tol?</td>                     <td>Ya ✅</td></tr>                 <tr><td style="color:#666">📊 Skor WLS</td>                     <td><b>7.47 / 10.00</b></td></tr>               </table>               <div style="margin-top:8px;padding:7px;background:#fff8e1;                           border-radius:4px;font-size:9.5px">                 <b>💡 Alasan:</b> Jangkauan distribusi mencakup Sigli dan Pidie Jaya sekaligus; area terbuka tersedia untuk pengembangan fasilitas lebih luas; potensi demand tumbuh seiring pembangunan tol Sigli–Lhokseumawe.               </div>             </div></div></div>`)[0];
+                popup_544f9ed90846970c0ce44117f6ee5ea2.setContent(html_84ec02d24615dfafd6e07cadf91df2b9);
+            
+        
+
+        marker_ba9f98a4f395551276de3edf73dc6361.bindPopup(popup_544f9ed90846970c0ce44117f6ee5ea2)
+        ;
+
+        
+    
+    
+            marker_ba9f98a4f395551276de3edf73dc6361.bindTooltip(
+                `<div>
+                     [Sigli] ALTERNATIF 3 – Kawasan Industri Simpang Sigli – Pidie Jaya
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_ba9f98a4f395551276de3edf73dc6361.setIcon(div_icon_5e9116ed071b8d8fac1e0018d5d6cd68);
+            
+    
+            feature_group_1ef5135234273c4f84491b10d2154c77.addTo(map_7e6acc383b96843832410ca1c151609b);
+        
+    
+            var layer_control_65cb1e961df3d137a9f083c8bf4f48ba_layers = {
+                base_layers : {
+                    "OpenStreetMap" : tile_layer_b7d03b5c9232a492262e203442400751,
+                    "Satelit (Esri)" : tile_layer_411a906268773159005b0ac3cad70919,
+                },
+                overlays :  {
+                    "Sub-WO Lhokseumawe" : feature_group_fae24bb7235381f8663c2ca39b066b00,
+                    "Sub-WO Bireuen" : feature_group_dac23cf9a652f1e6433e85aa88abfc55,
+                    "Sub-WO Sigli" : feature_group_1ef5135234273c4f84491b10d2154c77,
+                },
+            };
+            let layer_control_65cb1e961df3d137a9f083c8bf4f48ba = L.control.layers(
+                layer_control_65cb1e961df3d137a9f083c8bf4f48ba_layers.base_layers,
+                layer_control_65cb1e961df3d137a9f083c8bf4f48ba_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": false,
+  "autoZIndex": true,
+}
+            ).addTo(map_7e6acc383b96843832410ca1c151609b);
+
+        
+</script>
+</html>
