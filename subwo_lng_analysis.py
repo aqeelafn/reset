@@ -37,6 +37,7 @@ from openpyxl.utils import get_column_letter
 import folium
 from folium.plugins import MiniMap, Fullscreen
 import requests
+from global_land_mask import globe 
 
 OUTPUT_DIR = "outputs"
 
@@ -599,6 +600,20 @@ def get_route_osrm(lat1, lon1, lat2, lon2):
     except:
         return None, None, None
 
+from global_land_mask import globe
+
+def is_on_land(lat: float, lon: float) -> bool:
+    """
+    Validasi apakah koordinat berada di daratan.
+    Return True jika di darat, False jika di laut.
+    """
+    try:
+        return globe.is_land(lat, lon)
+    except:
+        return False  
+
+from global_land_mask import globe
+
 # ============================================================
 # 4. ENGINE OPTIMASI – WEIGHTED LOCATION SCORING (WLS)
 # ============================================================
@@ -635,30 +650,45 @@ def build_result_table() -> list:
         List of dict, satu dict per kandidat lokasi
     """
     results = []
+
     for wilayah, info in CANDIDATES.items():
         via_toll = info["via_toll"]
+
         for loc in info["locs"]:
+
+            # ✅ VALIDASI DARATAN
+            is_land = is_on_land(loc["lat"], loc["lon"])
+
+            if not is_land:
+                print(f"⚠️ SKIP (LAUT): {loc['name']} - {loc['lat']}, {loc['lon']}")
+                continue
+
             # Jarak jalan
             d_arun = road_distance(
                 ARUN["lat"], ARUN["lon"],
                 loc["lat"], loc["lon"],
                 via_toll=via_toll
             )
+
             d_ba = road_distance(
                 BANDA_ACEH["lat"], BANDA_ACEH["lon"],
                 loc["lat"], loc["lon"],
                 via_toll=False
             )
 
-            # Waktu tempuh (muatan penuh)
+            # Waktu tempuh
             t_arun_h = travel_time_hours(d_arun, full_load=True, via_toll=via_toll)
-            t_ba_h   = travel_time_hours(d_ba,   full_load=True, via_toll=False)
+            t_ba_h   = travel_time_hours(d_ba, full_load=True, via_toll=False)
 
-            # Analisis BBM
+            # BBM
             bbm = fuel_analysis(d_arun)
 
             # WLS
             wls = compute_wls(loc["wls_scores"])
+
+            # kalau mau penalti tambahan (opsional)
+            if not is_land:
+                wls = 0
 
             results.append({
                 "wilayah":          wilayah,
@@ -688,6 +718,9 @@ def build_result_table() -> list:
                 "biaya_dexlite":    bbm["biaya_dexlite_only"],
                 "wls":              wls,
                 "wls_scores":       loc["wls_scores"],
+
+                # ✅ TAMBAHAN
+                "is_on_land": is_land,
             })
     return results
 
@@ -1049,7 +1082,13 @@ def make_map(results: list, out_path: str) -> None:
     name="Light Map",
     control=True
     ).add_to(m)
-    
+
+    folium.TileLayer(
+    tiles="CartoDB dark_matter",
+    name="Dark Map",
+    control=True
+    ).add_to(m)
+
     folium.TileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         attr="Esri", name="Satelit (Esri)", show=False
