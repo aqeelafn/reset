@@ -36,6 +36,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 import folium
 from folium.plugins import MiniMap, Fullscreen
+import requests
 
 OUTPUT_DIR = "outputs"
 
@@ -573,6 +574,30 @@ def fuel_analysis(dist_km: float) -> dict:
         "biaya_dexlite_only":  biaya_dexlite_only,
     }
 
+import requests
+
+def get_route_osrm(lat1, lon1, lat2, lon2):
+    """
+    Ambil rute jalan asli (real road) dari OSRM API
+    """
+    url = f"http://router.project-osrm.org/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=full&geometries=geojson"
+
+    try:
+        r = requests.get(url, timeout=10)
+        data = r.json()
+
+        route = data['routes'][0]
+        distance_km = route['distance'] / 1000
+        duration_hr = route['duration'] / 3600
+        geometry = route['geometry']['coordinates']
+
+        # OSRM format: [lon, lat] → ubah ke [lat, lon]
+        route_line = [[lat, lon] for lon, lat in geometry]
+
+        return distance_km, duration_hr, route_line
+
+    except:
+        return None, None, None
 
 # ============================================================
 # 4. ENGINE OPTIMASI – WEIGHTED LOCATION SCORING (WLS)
@@ -1019,7 +1044,12 @@ def make_map(results: list, out_path: str) -> None:
         zoom_start=9,
         tiles=None
     )
-    folium.TileLayer("OpenStreetMap", name="OpenStreetMap", show=True).add_to(m)
+    folium.TileLayer(
+    tiles="CartoDB positron",
+    name="Light Map",
+    control=True
+    ).add_to(m)
+    
     folium.TileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         attr="Esri", name="Satelit (Esri)", show=False
@@ -1071,15 +1101,41 @@ def make_map(results: list, out_path: str) -> None:
         )
     ).add_to(m)
 
-    # -- Rute distribusi (Arun → masing-masing wilayah terbaik)
+    # -- Rute distribusi REAL ROAD (OSRM)
     best_by_wilayah = {r["wilayah"]: r for r in results if r["rank"] == "TERBAIK"}
     wil_colors = {"Lhokseumawe": "#1a73e8", "Bireuen": "#34a853", "Sigli": "#f9a825"}
+
     for wil, bst in best_by_wilayah.items():
-        folium.PolyLine(
-            [[ARUN["lat"], ARUN["lon"]], [bst["lat"], bst["lon"]]],
-            color=wil_colors[wil], weight=3.5, opacity=0.7, dash_array="8 4",
-            tooltip=f"Rute Arun → {wil} ({bst['d_arun_km']} km)"
-        ).add_to(m)
+
+        dist, dur, route_line = get_route_osrm(
+            ARUN["lat"], ARUN["lon"],
+            bst["lat"], bst["lon"]
+        )
+
+        if route_line and dist is not None:
+            folium.PolyLine(
+                route_line,
+                color=wil_colors.get(wil, "#000000"),
+                weight=4,
+                opacity=0.8,
+                tooltip=f"{wil} | {dist:.1f} km | {dur*60:.0f} menit"
+            ).add_to(m)
+
+        else:
+            # fallback kalau API gagal
+            folium.PolyLine(
+                [[ARUN["lat"], ARUN["lon"]], [bst["lat"], bst["lon"]]],
+                color=wil_colors.get(wil, "#000000"),
+                weight=3,
+                dash_array="5,5",
+                tooltip=f"{wil} | fallback (garis lurus)"
+            ).add_to(m)
+
+        # folium.PolyLine(
+        #     [[ARUN["lat"], ARUN["lon"]], [bst["lat"], bst["lon"]]],
+        #     color=wil_colors[wil], weight=3.5, opacity=0.7, dash_array="8 4",
+        #     tooltip=f"Rute Arun → {wil} ({bst['d_arun_km']} km)"
+        # ).add_to(m)
 
     # Rute Arun → Banda Aceh
     folium.PolyLine(
