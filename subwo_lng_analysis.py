@@ -37,6 +37,12 @@ from openpyxl.utils import get_column_letter
 import folium
 from folium.plugins import MiniMap, Fullscreen
 
+OUTPUT_DIR = "outputs"
+
+def ensure_output_dir():
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+
 # ============================================================
 # 1. KONFIGURASI & PARAMETER OPERASIONAL
 # ============================================================
@@ -1186,24 +1192,42 @@ if __name__ == "__main__":
     print("  PT Perta Arun Gas | Spatial & Logistic Analysis")
     print("=" * 65)
 
-    # Build result table
-    print("\n[1/3] Menghitung metrik spasial & logistik...")
-    results = build_result_table()
-    for r in results:
-        print(f"  {r['wilayah']:14s} | {r['rank']:12s} | "
-              f"Arun: {r['d_arun_km']:6.1f} km | "
-              f"{r['t_arun_str']:8s} | WLS: {r['wls']:.2f}")
+    # ✅ Fix: pastikan folder output ada
+    ensure_output_dir()
 
-    # Output Excel
+    # ========================================================
+    # 1. HITUNG DATA
+    # ========================================================
+    print("\n[1/3] Menghitung metrik spasial & logistik...\n")
+    results = build_result_table()
+
+    for r in results:
+        print(
+            f"{r['wilayah']:14s} | {r['rank']:12s} | "
+            f"{r['d_arun_km']:6.1f} km | "
+            f"{r['t_arun_str']:8s} | "
+            f"WLS: {r['wls']:.2f}"
+        )
+
+    # ========================================================
+    # 2. EXPORT EXCEL
+    # ========================================================
     print("\n[2/3] Membuat file Excel...")
-    excel_path = "/mnt/user-data/outputs/Kajian_SubWO_LNG_Aceh.xlsx"
+    excel_path = os.path.join(OUTPUT_DIR, "Kajian_SubWO_LNG_Aceh.xlsx")
     make_excel(results, excel_path)
 
-    # Output Peta
+    # ========================================================
+    # 3. EXPORT MAP
+    # ========================================================
     print("\n[3/3] Membuat peta interaktif...")
-    map_path = "/mnt/user-data/outputs/Peta_SubWO_LNG_Aceh.html"
+    map_path = os.path.join(OUTPUT_DIR, "Peta_SubWO_LNG_Aceh.html")
     make_map(results, map_path)
 
+    # ========================================================
+    # DONE
+    # ========================================================
     print("\n" + "=" * 65)
-    print("  SELESAI. Output tersimpan di /mnt/user-data/outputs/")
+    print("  SELESAI ✅")
+    print(f"  Excel : {excel_path}")
+    print(f"  Map   : {map_path}")
     print("=" * 65)
